@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: matrix
+  namespace: matrix
+  labels:
+    app: matrix
+spec:
+  selector:
+    matchLabels:
+      app: matrix
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: matrix
+    spec:
+      containers:
+        - name: synapse
+          image: matrixdotorg/synapse:v1.127.1
+          env:
+            - name: SYNAPSE_SERVER_NAME
+              value: "matrix.leibold.tech"
+            - name: SYNAPSE_REPORT_STATS
+              value: "no"
+            - name: TZ
+              value: "Europe/Berlin"
+          ports:
+            - containerPort: 8008
+              name: http
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 500m
+              memory: "512Mi"
+            limits:
+              cpu: 2
+              memory: "2Gi"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: matrix-data
+      restartPolicy: Always
