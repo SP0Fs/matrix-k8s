@@ -25,7 +25,7 @@ data:
       args:
         database: /data/homeserver.db
 
-    log_config: "/data/matrix.leibold.tech.log.config"
+    log_config: "/data/log.config"
 
     media_store_path: /data/media_store
     uploads_path: /data/uploads
@@ -50,3 +50,20 @@ data:
     trusted_key_servers: []
 
     suppress_key_server_warning: true
+  log.config: |
+    version: 1
+    formatters:
+      precise:
+        format: '%(asctime)s - %(name)s - %(lineno)d - %(levelname)s - %(request)s - %(message)s'
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: precise
+        stream: ext://sys.stdout
+    loggers:
+      synapse.storage.SQL:
+        level: WARNING
+    root:
+      level: INFO
+      handlers: [console]
+    disable_existing_loggers: false
