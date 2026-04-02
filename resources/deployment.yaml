@@ -20,32 +20,36 @@ spec:
       containers:
         - name: synapse
           image: matrixdotorg/synapse:v1.127.1
+          args:
+            - run
+            - --config-path=/data/homeserver.yaml
+            - --config-path=/data/secrets.yaml
           env:
             - name: TZ
               value: "Europe/Berlin"
-            - name: SYNAPSE_MACAROON_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: matrix-secret
-                  key: macaroon_secret_key
           ports:
             - containerPort: 8008
               name: http
-          # livenessProbe:
-          #   httpGet:
-          #     path: /health
-          #     port: http
-          #   initialDelaySeconds: 30
-          #   periodSeconds: 15
-          #   timeoutSeconds: 5
-          #   failureThreshold: 5
-          # readinessProbe:
-          #   httpGet:
-          #     path: /health
-          #     port: http
-          #   initialDelaySeconds: 15
-          #   periodSeconds: 10
-          #   timeoutSeconds: 5
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 30
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 5
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
           volumeMounts:
             - name: data
               mountPath: /data
@@ -56,6 +60,10 @@ spec:
             - name: config
               mountPath: /data/log.config
               subPath: log.config
+              readOnly: true
+            - name: secrets
+              mountPath: /data/secrets.yaml
+              subPath: secrets.yaml
               readOnly: true
           resources:
             requests:
@@ -71,4 +79,10 @@ spec:
         - name: config
           configMap:
             name: matrix-config
+        - name: secrets
+          secret:
+            secretName: matrix-secret
+            items:
+              - key: secrets.yaml
+                path: secrets.yaml
       restartPolicy: Always

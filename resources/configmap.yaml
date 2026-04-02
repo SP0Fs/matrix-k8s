@@ -21,9 +21,14 @@ data:
     federation_domain_whitelist: []
 
     database:
-      name: sqlite3
+      name: psycopg2
       args:
-        database: /data/homeserver.db
+        user: synapse
+        database: synapse
+        host: postgres-postgresql-primary.postgres.svc.cluster.local
+        port: 5432
+        cp_min: 5
+        cp_max: 10
 
     log_config: "/data/log.config"
 
