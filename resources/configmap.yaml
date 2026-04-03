@@ -20,16 +20,6 @@ data:
 
     federation_domain_whitelist: []
 
-    database:
-      name: psycopg2
-      args:
-        user: synapse
-        database: synapse
-        host: postgres-postgresql-primary.postgres.svc.cluster.local
-        port: 5432
-        cp_min: 5
-        cp_max: 10
-
     log_config: "/data/log.config"
 
     media_store_path: /data/media_store
