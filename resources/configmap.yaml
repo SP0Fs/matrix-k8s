@@ -6,6 +6,8 @@ metadata:
 data:
   homeserver.yaml: |
     server_name: "matrix.leibold.tech"
+    public_baseurl: "https://matrix.leibold.tech/"
+    serve_client_wellknown: true
     pid_file: /data/homeserver.pid
     report_stats: false
 
