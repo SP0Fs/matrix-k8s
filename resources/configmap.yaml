@@ -27,6 +27,7 @@ data:
 
     enable_registration: true
     enable_registration_without_verification: true
+    registration_requires_token: true
 
     url_preview_enabled: true
     url_preview_ip_range_blacklist:
